@@ -1,0 +1,27 @@
+First Install Docker in ur local system **********from official document
+
+Take any repo (web app)
+
+make docker file / pull the image 
+********Dockerfile 
+FROM python:3.13
+COPY . .
+RUN pip install -r requirements.txt
+RUN pip install --upgrade pip
+EXPOSE 8000
+CMD ["python","manage.py","runserver","0.0.0.0:8000"]
+
+$docker build .
+
+$docker images  #to check the images overall the container
+
+$docker ps #to check the all the containers
+
+$docker ps -a # to check the all stopped or dangling container
+
+$ docker run -d --name todopython -p 8001:8001 my-app:latest
+
+Make sure to change ssh port no to 8001 /tcp custome
+Take the public ip and port no (eg. Ip:8001) hit enter 
+
+

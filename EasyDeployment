@@ -25,3 +25,15 @@ Make sure to change ssh port no to 8001 /tcp custome
 Take the public ip and port no (eg. Ip:8001) hit enter 
 
 
+================================
+if u have not given name to ur images
+ $docker tag b87435578182 myimg:latest
+b87435578182: image id 
+
+to check the status :
+docker service status
+
+to get information about dokcer cntainer: $docker logs id
+
+
+

@@ -1,0 +1,5 @@
+same process till docker file
+
+docker volume create --name any_name --opt device= path --opt o = bind--opt type = none
+
+docker run -d -p 8080:8080 --mount source=dirname , target = / app     app name :latest

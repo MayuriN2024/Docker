@@ -1,0 +1,69 @@
+Docker compose
+=============================
+Docker Compose is a tool that helps you define and manage multi-container Docker applications. 
+Instead of running individual docker run commands for each container,
+you can use a single docker-compose.yml file to define and run all the services together.
+###############Key Features of Docker Compose
+Multi-container application management: You can define and run multiple containers at once.
+Declarative configuration: Uses a YAML file (docker-compose.yml) to define services, networks, and volumes.
+Simplifies container orchestration: With a single command, you can start (docker-compose up) or stop (docker-compose down) all services.
+Service dependencies: Automatically manages dependencies between containers
+
+or:
+compose is a tool for defining and running multi-container Docker applications 
+With compose, you use a Compose file to configure your applications's services. 
+Then , using a single command, you create and start all the services from your configuration
+
+
+Compose has commands for managing the whole lifecycle of yur applications;
+1. start , stop and rebuild serivces
+2. Viw the status of running services
+3. Stream the log output of running services
+4. Run a one-off command on a service.
+
+# docker compose uses a configuration file, where you define all the different stuffs we perform on command line into a file
+ 1. The file is basically an Yaml file(.yml)
+2. Default file is docker-compose.yml
+
+#################Compose File template: Dcokerfile#######################################
+version:"compose version"
+services:
+  <ServiceName>
+        <attribute1>:value
+        <attribute1>:value
+
+
+
+step 1: $ apt install -y docker-compose
+step2: 
+ubuntu@localhost:~$ vi docker-compose.yml
+ubuntu@localhost:~$ cat docker-compose.yml
+version: "3.9"
+services:
+  accha:  (image name)
+    build:  .  (same directory)
+    container_name: mau1  
+  accha2:
+    build: .
+    container_name: mau2
+###NOte services doesn't take name in uppercase so make sure to use it in lowrcase
+
+
+
+ubuntu@localhost:~$ ls
+Dockerfile  Notes-app  docker-compos.yml  docker-compose.yml  myfile  web  website
+
+#to run the command
+$docker-compose up -d
+
+#create and start containers(defaults to interactive mode)
+$docker-compose up
+
+#create and start sepcific services and its containers
+$docker-compose up -d <servicename>
+
+#list contianers
+$dockr-compose ps <service>
+
+stop and remove contianers 
+#docker-compose down<service>

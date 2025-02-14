@@ -1,0 +1,175 @@
+#how to create volume
+
+step: first create volume using command
+$docker volume create nameofvolume
+
+step 2: ubuntu@localhost:~$ docker run -d --name my_containr -v nameofVolume:/app/data myapp
+7a64e91e520f63bbcf74e43b4139e69bd39b6b111fceda5e109cabfba3c4f266
+ubuntu@localhost:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES
+7a64e91e520f   myapp     "/docker-entrypoint.…"   4 seconds ago   Up 3 seconds   80/tcp    my_containr
+7597b6a3a274   myapp     "/docker-entrypoint.…"   5 minutes ago   Up 5 minutes   80/tcp    my_container
+ubuntu@localhost:~$ docker inspect ^C
+ubuntu@localhost:~$ docker inspect 7a64e91e520f(container id)
+
+ "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "my_volume",
+                "Source": "/var/lib/docker/volumes/my_volume/_data",
+                "Destination": "/app/data",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+##check the above by using the above command 
+
+Step 3: source is ur local machine 
+run the command
+$cd /var/lib/docker/volumes/my_volume/_data
+root@localhost:/# cd /var/lib/docker/volumes/my_volume/_data
+root@localhost:/var/lib/docker/volumes/my_volume/_data# touch myfile.txt
+
+
+--------------------------------------------------------------------------------------------------
+On host machine(server)
+step 1 : Do ssh
+
+step 2: ubuntu@localhost:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS     NAMES
+7a64e91e520f   myapp     "/docker-entrypoint.…"   5 minutes ago    Up 5 minutes    80/tcp    my_containr
+7597b6a3a274   myapp     "/docker-entrypoint.…"   10 minutes ago   Up 10 minutes   80/tcp    my_container
+
+step 3: ubuntu@localhost:~$ docker exec -it 7a64e91e520f  bash
+Note: bash will open bash inside container This allows you to execute commands inside the container, just like you would on a regular Linux system.
+
+step 4: root@7a64e91e520f:/user/share/nginx/html# cd /app/data
+Note check the destination location by doing container inspect command
+ "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "my_volume",
+                "Source": "/var/lib/docker/volumes/my_volume/_data",
+                "Destination": "/app/data",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+
+
+root@7a64e91e520f:/app/data# ls
+root@7a64e91e520f:/app/data# touch my.txt
+root@7a64e91e520f:/app/data# cat >> my.txt
+hellow ji kaise ho aap sb log
+
+root@7a64e91e520f:/app/data# cat my.txt
+hellow mayuri!
+
+
+
+================================================================================================================
+
+Docker bind 
+
+step 1: do ssh
+step 2: $mkdir mahi
+  ubuntu@localhost:~$ docker run -d --name my_container -v /mahi:/app/data myapp
+781e070017c948aba03d52bcaf5cd58cf257b9857e87df1846b60af88fa60158
+Note : here no need to run extra command to create volume
+
+step 3: $ubuntu@localhost:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES
+7597b6a3a274   myapp     "/docker-entrypoint.…"   6 seconds ago   Up 5 seconds   80/tcp    my_container
+
+  ubuntu@localhost:~$ cd /mahi
+
+  ubuntu@localhost:/mahi$ sudo touch new.txt
+
+  ubuntu@localhost:/mahi$ ls
+new.txt
+
+  ubuntu@localhost:/mahi$ ls
+mission.txt  new.txt  ok.txt
+
+  ubuntu@localhost:/mahi$ exit
+
+
+  -----------------------------------------------
+  on server
+
+  step 1: do ssh
+  step 2: ubuntu@localhost:~$ ls
+Dockerfile  Notes-app  mahi  myfile  web  website
+
+step 3: CONTAINER ID   IMAGE     COMMAND                 
+    CREATED          STATUS          PORTS     NAMES
+7597b6a3a274   myapp     "/docker-entrypoint.…"   46 seconds ago   Up 45 seconds   80/tcp    my_container
+
+    step 4: 
+    root@7597b6a3a274:/# ls -ld /app/data
+drwxr-xr-x 2 root root 4096 Feb 14 05:49 /app/data
+
+    root@7597b6a3a274:/# cd app
+    
+root@7597b6a3a274:/app# cd data
+
+    
+root@7597b6a3a274:/app/data# ls
+root@7597b6a3a274:/app/data# ls
+new.txt
+root@7597b6a3a274:/app/data# cat >> new.txt
+what is ur name ?
+My name is Mayu
+
+========================================================================
+    
+     Difference Between Docker Volume and Bind Mount
+Docker provides two ways to persist and share data between the host and containers: Volumes and Bind Mounts.
+
+   # Docker provides two ways to store and manage persistent data:
+Docker Volumes → Managed by Docker, stored in a specific Docker directory.
+Bind Mounts → Uses a specific directory on the host machine.
+
+    
+#####What is a Docker Volume?
+Docker volumes are storage managed inside Docker’s filesystem. These are stored in a specific directory (/var/lib/docker/volumes/) and are independent of the container lifecycle.
+
+📌 Key Features of Volumes:
+✅ Managed by Docker → You can create, inspect, and remove them with docker volume commands.
+✅ Stored securely in /var/lib/docker/volumes/, not directly accessible from the host.
+✅ Portable → Can be used across multiple containers and even between different Docker hosts.
+✅ Better Performance → Optimized for use with Docker, especially when using remote storage drivers.
+✅ Ideal for Persistent Storage like databases, logs, and application data.
+
+$docker volume create my_volume
+  $docker run -d -v my_volume:/app/data --name my_container ubuntu 
+
+
+  #3f What is a Bind Mount?
+A bind mount directly links a directory from the host system into a container. Unlike volumes, Docker does not manage bind mounts, and they can be placed anywhere on the host.
+
+📌 Key Features of Bind Mounts:
+✅ Uses a specific path on the host → E.g., /home/user/data.
+✅ No need to create separately → Just specify the path when running the container.
+✅ Useful for local development → When you want to share files between your host and a container.
+✅ Less secure → Because it provides full access to the host filesystem.
+docker run -d -v /home/user/data:/app/data --name my_container ubuntu
+
+  Note ; /home /user/ data it can be anything according to u 
+  eg. /home/mahi
+
+When to Use Volumes vs. Bind Mounts?
+Use Docker Volumes when:	                                           Use Bind Mounts when:
+You need persistent storage for containers.                         	You want to share host files with a container.
+You are running databases, logs, and application data.	               You are developing an app and need real-time updates.
+You want better security and isolation from the host.	                  You need direct access to specific host directories.
+
+ 
+
+
+  
+
